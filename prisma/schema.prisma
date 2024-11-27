@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  firstName String
+  lastName  String?
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model FolioData {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  name      String
+  folioData Folio[]
+}
+
+model Folio {
+  id          Int         @id @default(autoincrement())
+  folioNumber Int
+  folioDataId Int?
+  name        String
+  FolioData   FolioData?  @relation(fields: [folioDataId], references: [id])
+  itemDetails FolioItem[]
+}
+
+model FolioItem {
+  id       Int     @id @default(autoincrement())
+  itemName String
+  itemFee  Decimal @db.Money
+  folioId  Int?
+  Folio    Folio?  @relation(fields: [folioId], references: [id])
+}
