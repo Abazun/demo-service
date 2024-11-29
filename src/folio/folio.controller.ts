@@ -25,18 +25,18 @@ export class FolioController {
   @UseGuards(AuthGuard)
   @Post('/create')
   async createFolio(
-    @Body()
-    folioDTO: FolioDTO,
+    @Body() folioDTO: FolioDTO,
+    @Request() req,
   ): Promise<string> {
-    return await this.folioService.createFolio(folioDTO);
+    return await this.folioService.createFolio(folioDTO, req.user);
   }
 
   @UseGuards(AuthGuard)
   @Put('/update')
   async updateFolio(
-    @Body()
-    folioDTO: FolioDTO,
+    @Body() folioDTO: FolioDTO,
+    @Request() req,
   ): Promise<string> {
-    return await this.folioService.updateFolio(folioDTO);
+    return await this.folioService.updateFolio(folioDTO, req.user);
   }
 }

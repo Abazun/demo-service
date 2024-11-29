@@ -1,13 +1,8 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class FolioDTO {
   @IsNotEmpty()
-  name: string;
-  @IsNotEmpty()
   folioData: Folio[];
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
 }
 
 class Folio {

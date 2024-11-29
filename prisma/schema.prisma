@@ -28,8 +28,8 @@ model Folio {
   folioNumber Int
   folioDataId Int?
   name        String
-  FolioData   FolioData?  @relation(fields: [folioDataId], references: [id])
   itemDetails FolioItem[]
+  FolioData   FolioData?  @relation(fields: [folioDataId], references: [id], onDelete: Cascade)
 }
 
 model FolioItem {
@@ -37,5 +37,5 @@ model FolioItem {
   itemName String
   itemFee  Decimal @db.Money
   folioId  Int?
-  Folio    Folio?  @relation(fields: [folioId], references: [id])
+  Folio    Folio?  @relation(fields: [folioId], references: [id], onDelete: Cascade)
 }

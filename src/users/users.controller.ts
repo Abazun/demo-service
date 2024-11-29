@@ -12,7 +12,7 @@ import { LoginDTO } from './loginDTO';
 import { AuthGuard } from './auth/auth.guard';
 
 // TODO - common url prefix handled somewhere else
-@Controller('api/v1/users')
+@Controller('api/v1/user')
 export class UsersController {
   constructor(private userService: UsersService) {}
   @Post('/signup')
@@ -32,8 +32,8 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('/profile')
+  @Get('/details')
   async getProfile(@Request() req) {
-    return req.user;
+    return await req.user;
   }
 }
