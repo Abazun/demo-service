@@ -8,12 +8,14 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  firstName String
-  lastName  String?
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id              Int       @id @default(autoincrement())
+  firstName       String
+  lastName        String?
+  email           String    @unique
+  password        String
+  createdAt       DateTime  @default(now())
+  accountStatus   String
+  emailVerifiedAt DateTime?
 }
 
 model FolioData {
@@ -38,4 +40,11 @@ model FolioItem {
   itemFee  Decimal @db.Money
   folioId  Int?
   Folio    Folio?  @relation(fields: [folioId], references: [id], onDelete: Cascade)
+}
+
+model otpToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String
+  expiresAt DateTime
 }

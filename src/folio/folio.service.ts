@@ -2,28 +2,42 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Folio, FolioDataResponse, FolioItem } from './folio';
 import { FolioDTO } from './folioDTO';
-import { UserInfo } from "../users/user";
 
 @Injectable()
 export class FolioService {
   constructor(private prisma: PrismaService) {}
 
-  async getFolios(email: string): Promise<FolioDataResponse> {
+  async getFolios(user): Promise<FolioDataResponse> {
     let folioResponse;
 
-    await this.getFolioResponse(email).then(
+    await this.getFolioResponse(user.email).then(
       (folios) => {
-        folioResponse = folios;
+        if (!!folios) {
+          folioResponse = folios;
+        } else {
+          folioResponse = this.prisma.user.findUnique({
+            where: {
+              email: user.email
+            }
+          }).then((data) => {
+            return {
+              id: data.id,
+              name: data.firstName + ' ' + data.lastName ? data.lastName : '',
+              email: data.email,
+              folioData: [],
+            } as FolioDataResponse
+          })
+        }
       },
       () => {
         this.throwError('malformed request');
       },
     );
+
     return folioResponse || null;
   }
 
-  async createFolio(foData: FolioDTO, user): Promise<string> {
-    console.log(user);
+  async createFolio(foData: FolioDTO, user): Promise<FolioDataResponse> {
     if (await this.findFolios(user.email)) {
       this.throwError('Invalid request');
     } else {
@@ -31,11 +45,11 @@ export class FolioService {
       this.getName(user).then((name: string) => {
         userName = name;
       })
-      return await this.doCreate(userName, foData, user.email);
+      return await this.doCreate(userName, foData, user);
     }
   }
 
-  async updateFolio(foData: FolioDTO, user): Promise<string> {
+  async updateFolio(foData: FolioDTO, user): Promise<FolioDataResponse> {
     let userName: string = '';
     if (await this.findFolios(user.email)) {
       this.getName(user).then((name: string) => {
@@ -47,7 +61,7 @@ export class FolioService {
           email: user.email
         }
       })) {
-        return await this.doCreate(userName, foData, user.email);
+        return await this.doCreate(userName, foData, user);
       } else {
         this.throwError('Bad Request');
       }
@@ -56,9 +70,9 @@ export class FolioService {
     }
   }
 
-  private async doCreate(userName: string, foData: FolioDTO, email: string): Promise<string> {
-    if (await this.prisma.folioData.create(this.toFolioRequest(foData, userName, email))) {
-      return 'success';
+  private async doCreate(userName: string, foData: FolioDTO, user) {
+    if (await this.prisma.folioData.create(this.toFolioRequest(foData, userName, user.email))) {
+      return await this.getFolios(user);
     } else {
       this.throwError('something happened');
     }
@@ -125,9 +139,8 @@ export class FolioService {
       where: {
         email: user.email
       }
-    }).then((user: UserInfo) => {
+    }).then((user) => {
       name = user.firstName + (user.lastName ? ' ' + user.lastName : '');
-      console.log(name)
     });
     return name;
   }

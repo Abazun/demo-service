@@ -7,3 +7,8 @@ export class LoginDTO {
   @IsNotEmpty()
   password: string;
 }
+
+export class OTPDTO {
+  @IsNotEmpty()
+  pass: string;
+}

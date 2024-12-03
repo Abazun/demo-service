@@ -11,3 +11,13 @@ export class CreateUserDTO {
   @IsNotEmpty()
   password: string;
 }
+
+export interface FullUserDTO {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  password: string;
+  createdAt: Date;
+  accountStatus: 'active' | 'inactive';
+  emailVerifiedAt?: string;
+}

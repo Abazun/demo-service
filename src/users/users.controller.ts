@@ -2,38 +2,39 @@ import {
   Body,
   Controller,
   Post,
-  Get,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
+  Request, UseGuards
+} from "@nestjs/common";
 import { CreateUserDTO } from './createUserDTO';
 import { UsersService } from './users.service';
-import { LoginDTO } from './loginDTO';
-import { AuthGuard } from './auth/auth.guard';
+import { LoginDTO, OTPDTO } from "./loginDTO";
+import { VerificationGuard } from "../auth/guards/verification.guard";
 
 // TODO - common url prefix handled somewhere else
-@Controller('api/v1/user')
+@Controller('api/v1/user/')
 export class UsersController {
   constructor(private userService: UsersService) {}
-  @Post('/signup')
-  async create(
-    @Body()
-    createUserDTO: CreateUserDTO,
-  ) {
+
+  @Post('signup')
+  async create(@Body() createUserDTO: CreateUserDTO) {
     return await this.userService.signup(createUserDTO);
   }
 
-  @Post('/login')
-  async login(
-    @Body()
-    loginDTO: LoginDTO,
-  ) {
+  @Post('login')
+  async login(@Body() loginDTO: LoginDTO) {
     return await this.userService.login(loginDTO);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('/details')
-  async getProfile(@Request() req) {
-    return await req.user;
+  @UseGuards(VerificationGuard)
+  @Post('verification')
+  async generateEmailValidation(@Request() req) {
+    await this.userService.generateEmailValidation(req);
+
+    return { status: 'success', message: 'sending email' };
+  }
+
+  @UseGuards(VerificationGuard)
+  @Post('verify')
+  async verifyEmail(@Body() otp: OTPDTO, @Request() req) {
+    return await this.userService.verifyEmail(req, otp);
   }
 }

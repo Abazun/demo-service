@@ -4,6 +4,8 @@ import { UsersService } from './users.service';
 import { PrismaService } from '../prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
+import { EmailModule } from "../email/email.module";
+import { VerificationModule } from "../verification/verification.module";
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { jwtConstants } from './constants';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },
     }),
+    EmailModule,
+    VerificationModule
   ],
   controllers: [UsersController],
   providers: [UsersService, PrismaService],
