@@ -11,19 +11,20 @@ import { FolioService } from './folio.service';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { FolioDTO } from './folioDTO';
 import { FolioDataResponse } from './folio';
+import { apiRoutes } from "../users/constants";
 
-@Controller('api/v1/folio')
+@Controller(apiRoutes.folio)
 export class FolioController {
   constructor(private folioService: FolioService) {}
 
   @UseGuards(AuthGuard)
-  @Get('/folios')
+  @Get('folios')
   async getFolios(@Request() req): Promise<FolioDataResponse> {
     return await this.folioService.getFolios(req.user);
   }
 
   @UseGuards(AuthGuard)
-  @Post('/create')
+  @Post('create')
   async createFolio(
     @Body() folioDTO: FolioDTO,
     @Request() req,
@@ -32,7 +33,7 @@ export class FolioController {
   }
 
   @UseGuards(AuthGuard)
-  @Put('/update')
+  @Put('update')
   async updateFolio(
     @Body() folioDTO: FolioDTO,
     @Request() req,

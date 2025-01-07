@@ -12,7 +12,7 @@ import { VerificationModule } from "../verification/verification.module";
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '70000s' },
     }),
     EmailModule,
     VerificationModule

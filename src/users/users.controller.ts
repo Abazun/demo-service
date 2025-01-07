@@ -8,9 +8,9 @@ import { CreateUserDTO } from './createUserDTO';
 import { UsersService } from './users.service';
 import { LoginDTO, OTPDTO } from "./loginDTO";
 import { VerificationGuard } from "../auth/guards/verification.guard";
+import { apiRoutes } from "./constants";
 
-// TODO - common url prefix handled somewhere else
-@Controller('api/v1/user/')
+@Controller(apiRoutes.user)
 export class UsersController {
   constructor(private userService: UsersService) {}
 
