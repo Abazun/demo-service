@@ -40,4 +40,9 @@ export class FolioController {
   ): Promise<FolioDataResponse> {
     return await this.folioService.updateFolio(folioDTO, req.user);
   }
+
+  @Get('test')
+  async getTest(): Promise<string> {
+    return 'Service is running';
+  }
 }
